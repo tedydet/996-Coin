@@ -1142,6 +1142,8 @@ CTransactionRef GetTransaction(const CBlockIndex* const block_index, const CTxMe
 
 bool CheckHeaderPoW(const CBlockHeader& block, const Consensus::Params& consensusParams)
 {
+    if (block.GetHash() == consensusParams.hashGenesisBlock)
+        return true;
     // Check for proof of work block header
     return CheckProofOfWork(block.GetHash(), block.nBits, consensusParams);
 }
