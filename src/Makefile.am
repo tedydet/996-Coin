@@ -83,22 +83,22 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += bitcoin-posd
+  bin_PROGRAMS += 996coind
 endif
 
 if BUILD_BITCOIN_NODE
-  bin_PROGRAMS += bitcoin-pos-node
+  bin_PROGRAMS += 996coin-node
 endif
 
 if BUILD_BITCOIN_CLI
-  bin_PROGRAMS += bitcoin-pos-cli
+  bin_PROGRAMS += 996coin-cli
 endif
 if BUILD_BITCOIN_TX
-  bin_PROGRAMS += bitcoin-pos-tx
+  bin_PROGRAMS += 996coin-tx
 endif
 if ENABLE_WALLET
 if BUILD_BITCOIN_WALLET
-  bin_PROGRAMS += bitcoin-pos-wallet
+  bin_PROGRAMS += 996coin-wallet
 endif
 endif
 
