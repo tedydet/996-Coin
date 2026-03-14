@@ -113,7 +113,7 @@ public:
         m_assumed_blockchain_size = 2;
         m_assumed_chain_state_size = 1;
 
-        genesis = CreateGenesisBlock(1773436821, 3694275, 0x1e0fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1773496858, 3694275, 0x1e0fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         std::cout << "Genesis Block Hash: " << consensus.hashGenesisBlock.ToString() << std::endl;
         std::cout << "Genesis Merkle Root: " << genesis.hashMerkleRoot.ToString() << std::endl;
