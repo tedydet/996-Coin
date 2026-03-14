@@ -81,24 +81,27 @@ bin_PROGRAMS =
 noinst_PROGRAMS =
 TESTS =
 BENCHMARKS =
-
+996coind_SOURCES = bitcoind.cpp
+996coin_cli_SOURCES = bitcoin-cli.cpp
+996coin_tx_SOURCES = bitcoin-tx.cpp
+996coin_wallet_SOURCES = bitcoin-wallet.cpp
 if BUILD_BITCOIND
-  bin_PROGRAMS += 996coind
+  bin_PROGRAMS += bitcoin-posd
 endif
 
 if BUILD_BITCOIN_NODE
-  bin_PROGRAMS += 996coin-node
+  bin_PROGRAMS += bitcoin-pos-node
 endif
 
 if BUILD_BITCOIN_CLI
-  bin_PROGRAMS += 996coin-cli
+  bin_PROGRAMS += bitcoin-pos-cli
 endif
 if BUILD_BITCOIN_TX
-  bin_PROGRAMS += 996coin-tx
+  bin_PROGRAMS += bitcoin-pos-tx
 endif
 if ENABLE_WALLET
 if BUILD_BITCOIN_WALLET
-  bin_PROGRAMS += 996coin-wallet
+  bin_PROGRAMS += bitcoin-pos-wallet
 endif
 endif
 

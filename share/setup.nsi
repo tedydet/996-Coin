@@ -63,7 +63,7 @@ VIAddVersionKey CompanyName "${COMPANY}"
 VIAddVersionKey CompanyWebsite "${URL}"
 VIAddVersionKey FileVersion "0.20.99"
 VIAddVersionKey FileDescription "Installer for 996-Coin Core"
-VIAddVersionKey LegalCopyright "Copyright (C) 2026 The 996-Coin Core developers"
+VIAddVersionKey LegalCopyright "Copyright (C) 2009-2020 The 996-Coin Core developers"
 InstallDirRegKey HKCU "${REGKEY}" Path
 ShowUninstDetails show
 

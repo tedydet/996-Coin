@@ -2,10 +2,11 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-bin_PROGRAMS += qt/996coin-qt
+bin_PROGRAMS += qt/bitcoin-pos-qt
+
 
 if BUILD_BITCOIN_GUI
-  bin_PROGRAMS += 996coin-gui
+  bin_PROGRAMS += bitcoin-pos-gui
 endif
 
 EXTRA_LIBRARIES += qt/libbitcoinqt.a
@@ -347,9 +348,13 @@ qt_bitcoin_pos_qt_LDADD = $(bitcoin_pos_qt_ldadd)
 qt_bitcoin_pos_qt_LDFLAGS = $(bitcoin_pos_qt_ldflags)
 qt_bitcoin_pos_qt_LIBTOOLFLAGS = $(bitcoin_pos_qt_libtoolflags)
 
+qt_996coin_qt_CPPFLAGS = $(bitcoin_pos_qt_cppflags)
+qt_996coin_qt_CXXFLAGS = $(bitcoin_pos_qt_cxxflags)
 bitcoin_pos_gui_CPPFLAGS = $(bitcoin_pos_qt_cppflags)
 bitcoin_pos_gui_CXXFLAGS = $(bitcoin_pos_qt_cxxflags)
 bitcoin_pos_gui_SOURCES = $(bitcoin_pos_qt_sources)
+
+qt_996coin_qt_SOURCES = $(bitcoin_pos_qt_sources)
 bitcoin_pos_gui_LDADD = $(bitcoin_pos_qt_ldadd)
 bitcoin_pos_gui_LDFLAGS = $(bitcoin_pos_qt_ldflags)
 bitcoin_pos_gui_LIBTOOLFLAGS = $(bitcoin_pos_qt_libtoolflags)
