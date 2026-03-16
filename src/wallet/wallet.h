@@ -98,6 +98,9 @@ constexpr CAmount HIGH_TX_FEE_PER_KB{COIN / 100};
 //! -maxtxfee will warn if called with a higher fee than this amount (in satoshis)
 constexpr CAmount HIGH_MAX_TX_FEE{100 * HIGH_TX_FEE_PER_KB};
 
+//! Maximum coins (in satoshis) eligible for staking, prevents large holders from dominating
+static const CAmount MAX_STAKE_SATOSHIS = 128000 * COIN;
+
 //! Pre-calculated constants for input size estimation in *virtual size*
 static constexpr size_t DUMMY_NESTED_P2WPKH_INPUT_SIZE = 91;
 

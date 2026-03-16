@@ -2504,12 +2504,14 @@ void CWallet::AvailableCoinsForStaking(std::vector<COutput>& vCoins) const
     const bool includeColdStaking = gArgs.GetBoolArg("-coldstaking", DEFAULT_COLDSTAKING);
     vCoins.clear();
 
+    const int64_t nMaxStakeSatoshis = MAX_STAKE_SATOSHIS; // prevents "whales" from dominating the staking process
+    int64_t nTotalStakeValue = 0;
+
     for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it)
     {
         const uint256& wtxid = it->first;
         const CWalletTx* pcoin = &(*it).second;
         int nDepth = pcoin->GetDepthInMainChain();
-        int64_t nMaxStakeSatoshis = 128000 * COIN; // prevents "whales" from dominating the staking process
 
         if (nDepth < 1)
             continue;
@@ -2519,7 +2521,7 @@ void CWallet::AvailableCoinsForStaking(std::vector<COutput>& vCoins) const
 
         if (pcoin->GetBlocksToMaturity() > 0)
             continue;
-        uint64_t nValue = 0;
+
         for (unsigned int i = 0; i < pcoin->tx->vout.size(); i++)
         {
             if (!IsSpent(wtxid, i))
@@ -2539,11 +2541,9 @@ void CWallet::AvailableCoinsForStaking(std::vector<COutput>& vCoins) const
                         bool spendable = ((mine & ISMINE_SPENDABLE) != ISMINE_NO) ||
                             (((mine & ISMINE_WATCH_ONLY) != ISMINE_NO) && solvable) ||
                             ((mine & (includeColdStaking ? ISMINE_COLD : ISMINE_NO)) != ISMINE_NO);
-                        nValue += pcoin->tx->vout[i].nValue;
-                        if (nValue <= nMaxStakeSatoshis) {
+                        if (nTotalStakeValue + pcoin->tx->vout[i].nValue <= nMaxStakeSatoshis) {
+                            nTotalStakeValue += pcoin->tx->vout[i].nValue;
                             vCoins.push_back(COutput(pcoin, i, nDepth, spendable, solvable, pcoin->IsTrusted()));
-                        } else {
-                            return;
                         }
                     }
                 }
@@ -3461,7 +3461,7 @@ uint64_t CWallet::GetStakeWeight() const
             nWeight += pcoin.first->tx->vout[pcoin.second].nValue;
     }
 
-    nWeight = std::min(nWeight, (uint64_t)128000 * COIN);
+    nWeight = std::min(nWeight, (uint64_t)MAX_STAKE_SATOSHIS);
 
     return nWeight;
 }
