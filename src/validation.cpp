@@ -1319,7 +1319,7 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
-    CAmount nSubsidy = 50 * COIN;
+    CAmount nSubsidy = 996 * COIN;
 
     int reductions = (nHeight - 1) / consensusParams.NNSRewardMatchStep;
 
@@ -2131,7 +2131,7 @@ bool CheckReward(const CBlock& block, BlockValidationState& state, int nHeight, 
     if (block.IsProofOfWork())
     {
         // Check proof-of-work reward
-        CAmount blockReward = nFees + GetBlockSubsidy(nHeight, consensusParams);
+        CAmount blockReward = nFees + GetBlockSubsidy(nHeight, consensusParams) * 10;
         if (block.vtx[offset]->GetValueOut() > blockReward) {
             LogPrintf("CheckReward(): coinbase pays too much (actual=%d vs limit=%d)\n", block.vtx[offset]->GetValueOut(), blockReward);
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-cb-amount");
