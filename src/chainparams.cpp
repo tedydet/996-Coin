@@ -125,12 +125,8 @@ public:
         // This is fine at runtime as we'll fall back to using them as an addrfetch if they don't support the
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
-        // vSeeds.emplace_back("seed1.bitcoinpos.net");
-        // vSeeds.emplace_back("seed2.bitcoinpos.net");
-        // vSeeds.emplace_back("seed3.bitcoinpos.net");
-        // vSeeds.emplace_back("seed4.bitcoinpos.net");
-        // vSeeds.emplace_back("seed5.bitcoinpos.net");
-        // vSeeds.emplace_back("seed6.bitcoinpos.net");
+        vSeeds.emplace_back("80.190.82.162");
+        vSeeds.emplace_back("194.238.30.30");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,53);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,18);
