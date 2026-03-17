@@ -1323,22 +1323,8 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 
     int reductions = (nHeight - 1) / consensusParams.NNSRewardMatchStep;
 
-    if (reductions <= 3)
-    {
-        // Halve the reward - right shift
-        nSubsidy >>= reductions;
-    }
-    else
-    {
-        nSubsidy >>= 3;
-        reductions = (nHeight - consensusParams.NNSRewardMatchHeight - 1) / consensusParams.nSubsidyHalvingInterval;
-
-        // Force block reward to zero at some point
-        if (reductions >= 64)
-            return 0;
-
-        // Subsidy is reduced by 25% every 700,000 blocks which will occur approximately every 4 years.
-        nSubsidy *= pow(0.75, reductions);
+    for (int i = 0; i < reductions; i++) {
+        nSubsidy -= nSubsidy / 10;
     }
 
     return nSubsidy;
