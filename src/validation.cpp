@@ -1321,10 +1321,10 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
     CAmount nSubsidy = 996 * COIN;
 
-    int reductions = (nHeight - 1) / consensusParams.NNSRewardMatchStep;
+    int reductions = (nHeight - 1) / consensusParams.nSubsidyHalvingInterval;
 
     for (int i = 0; i < reductions; i++) {
-        nSubsidy -= nSubsidy / 10;
+        nSubsidy /= 10;
     }
 
     return nSubsidy;
