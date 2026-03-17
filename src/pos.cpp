@@ -56,36 +56,37 @@ uint256 ComputeStakeModifier(const CBlockIndex* pindexPrev, const uint256& kerne
 //
 bool CheckStakeKernelHash(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t blockFromTime, CAmount prevoutValue, const COutPoint& prevout, unsigned int nTimeBlock, uint256& hashProofOfStake, uint256& targetProofOfStake, bool fPrintProofOfStake)
 {
-    if (nTimeBlock < blockFromTime)  // Transaction timestamp violation
+    if (nTimeBlock < blockFromTime)
         return error("CheckStakeKernelHash() : nTime violation");
 
-    // Base target
     arith_uint256 bnTarget;
     bnTarget.SetCompact(nBits);
 
-    // Weighted target
-    int64_t nValueIn = prevoutValue;
-    arith_uint256 bnWeight = arith_uint256(nValueIn);
+    // Cap effective staking amount at 125,000 coins
+    static const CAmount MAX_STAKE_WEIGHT = 125000 * COIN;
+    CAmount nEffectiveValueIn = std::min(prevoutValue, MAX_STAKE_WEIGHT);
+
+    arith_uint256 bnWeight = arith_uint256(nEffectiveValueIn);
     bnTarget *= bnWeight;
 
     targetProofOfStake = ArithToUint256(bnTarget);
 
     uint256 nStakeModifier = pindexPrev->nStakeModifier;
 
-    // Calculate hash
     CDataStream ss(SER_GETHASH, 0);
     ss << nStakeModifier;
     ss << blockFromTime << prevout.hash << prevout.n << nTimeBlock;
     hashProofOfStake = Hash(ss);
 
     if (fPrintProofOfStake) {
-        LogPrint(BCLog::COINSTAKE, "CheckStakeKernelHash() : check modifier=%s nTimeBlockFrom=%u nPrevout=%u nTimeBlock=%u hashProof=%s\n",
+        LogPrint(BCLog::COINSTAKE,
+            "CheckStakeKernelHash() : check modifier=%s nTimeBlockFrom=%u nPrevout=%u nTimeBlock=%u effectiveValue=%d hashProof=%s\n",
             nStakeModifier.GetHex().c_str(),
             blockFromTime, prevout.n, nTimeBlock,
+            nEffectiveValueIn / COIN,
             hashProofOfStake.ToString());
     }
 
-    // Now check if proof-of-stake hash meets target protocol
     if (UintToArith256(hashProofOfStake) > bnTarget)
         return false;
 
@@ -262,7 +263,6 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, uint32_t nTimeBloc
 
 void CacheKernel(std::map<COutPoint, CStakeCache>& cache, const COutPoint& prevout, CBlockIndex* pindexPrev, CCoinsViewCache& view){
     if(cache.find(prevout) != cache.end()){
-        //already in cache
         return;
     }
 
@@ -279,7 +279,10 @@ void CacheKernel(std::map<COutPoint, CStakeCache>& cache, const COutPoint& prevo
         return;
     }
 
-    CStakeCache c(blockFrom->nTime, coinPrev.out.nValue);
+    static const CAmount MAX_STAKE_WEIGHT = 125000 * COIN;
+    CAmount nEffectiveValue = std::min(coinPrev.out.nValue, MAX_STAKE_WEIGHT);
+
+    CStakeCache c(blockFrom->nTime, nEffectiveValue);
     cache.insert({prevout, c});
 }
 
