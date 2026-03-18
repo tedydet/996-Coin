@@ -70,11 +70,11 @@ public:
         consensus.NNSRewardMatchHeight = 3 * consensus.NNSRewardMatchStep;
         consensus.NNSDiffAdjHeight = 130000;
         consensus.NNSColdStakeEnableHeight = 260000;
-        consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 10 * 3 * 60; // every 10 blocks
         consensus.nPowTargetSpacing = 3 * 60;
-        consensus.fPowAllowMinDifficultyBlocks = false;
+        consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
