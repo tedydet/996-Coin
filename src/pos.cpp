@@ -431,20 +431,16 @@ bool AddMPoSScript(std::vector<CScript> &mposScriptList, int nHeight, const Cons
 
 bool GetMPoSOutputScripts(std::vector<CScript>& mposScriptList, int nHeight, const Consensus::Params& consensusParams)
 {
-    bool ret = true;
     nHeight -= COINBASE_MATURITY;
 
     const int recipients_needed = consensusParams.nMPoSRewardRecipients - 1;
     std::set<CScript> seen_scripts;
 
-    // Walk backwards until we have enough unique recipient scripts
-    for (int offset = 0; ret && (int)mposScriptList.size() < recipients_needed && (nHeight - offset) >= 0; ++offset)
+    for (int offset = 0; (int)mposScriptList.size() < recipients_needed && (nHeight - offset) >= 0; ++offset)
     {
         std::vector<CScript> tmp;
-        ret &= AddMPoSScript(tmp, nHeight - offset, consensusParams);
-
-        if (!ret) {
-            break;
+        if (!AddMPoSScript(tmp, nHeight - offset, consensusParams)) {
+            continue;
         }
 
         if (tmp.empty()) {
@@ -453,13 +449,14 @@ bool GetMPoSOutputScripts(std::vector<CScript>& mposScriptList, int nHeight, con
 
         const CScript& script = tmp.back();
 
-        // Only add unique scripts
         if (seen_scripts.insert(script).second) {
             mposScriptList.push_back(script);
         }
     }
 
-    return ret;
+    // It is okay to have fewer unique recipients than requested,
+    // especially on young chains or when the same staker appears often.
+    return !mposScriptList.empty();
 }
 
 bool CreateMPoSOutputs(CMutableTransaction& txNew, int64_t nRewardPiece, int nHeight, const Consensus::Params& consensusParams)
