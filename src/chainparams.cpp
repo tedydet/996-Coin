@@ -390,7 +390,7 @@ public:
         consensus.NNSRewardMatchStep = 400;
         consensus.NNSRewardMatchHeight = 3 * consensus.NNSRewardMatchStep;
         consensus.NNSDiffAdjHeight = 1500;
-        consensus.NNSColdStakeEnableHeight = 2000;
+        consensus.NNSColdStakeEnableHeight = consensus.nLastPOWBlock + 1;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 10 * 3 * 60; // every 10 blocks
@@ -403,7 +403,7 @@ public:
         consensus.nLastPOWBlock = 0x7fffffff;
         consensus.nMPoSRewardRecipients = 10;
         consensus.nFirstMPoSBlock = 5000;
-        consensus.nLastMPoSBlock = consensus.NNSColdStakeEnableHeight;
+        consensus.nLastMPoSBlock = 996000;
         consensus.nEnableHeaderSignatureHeight = 0;
         consensus.nCheckpointSpan = COINBASE_MATURITY;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
