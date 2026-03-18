@@ -7,6 +7,7 @@
 #define BOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT
 #include <boost/assign/list_of.hpp>
 
+#include <set>
 #include <pos.h>
 #include <txdb.h>
 #include <validation.h>
@@ -433,10 +434,29 @@ bool GetMPoSOutputScripts(std::vector<CScript>& mposScriptList, int nHeight, con
     bool ret = true;
     nHeight -= COINBASE_MATURITY;
 
-    // Populate the list of scripts for the reward recipients
-    for(int i = 0; (i < consensusParams.nMPoSRewardRecipients - 1) && ret; i++)
+    const int recipients_needed = consensusParams.nMPoSRewardRecipients - 1;
+    std::set<CScript> seen_scripts;
+
+    // Walk backwards until we have enough unique recipient scripts
+    for (int offset = 0; ret && (int)mposScriptList.size() < recipients_needed && (nHeight - offset) >= 0; ++offset)
     {
-        ret &= AddMPoSScript(mposScriptList, nHeight - i, consensusParams);
+        std::vector<CScript> tmp;
+        ret &= AddMPoSScript(tmp, nHeight - offset, consensusParams);
+
+        if (!ret) {
+            break;
+        }
+
+        if (tmp.empty()) {
+            continue;
+        }
+
+        const CScript& script = tmp.back();
+
+        // Only add unique scripts
+        if (seen_scripts.insert(script).second) {
+            mposScriptList.push_back(script);
+        }
     }
 
     return ret;
