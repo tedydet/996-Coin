@@ -2504,9 +2504,6 @@ void CWallet::AvailableCoinsForStaking(std::vector<COutput>& vCoins) const
     const bool includeColdStaking = gArgs.GetBoolArg("-coldstaking", DEFAULT_COLDSTAKING);
     vCoins.clear();
 
-    const int64_t nMaxStakeSatoshis = MAX_STAKE_SATOSHIS; // prevents "whales" from dominating the staking process
-    int64_t nTotalStakeValue = 0;
-
     for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it)
     {
         const uint256& wtxid = it->first;
@@ -2531,20 +2528,20 @@ void CWallet::AvailableCoinsForStaking(std::vector<COutput>& vCoins) const
                 {
                     if (mine == ISMINE_COLD && !includeColdStaking)
                         continue;
+
                     std::vector<valtype> solutions;
                     auto whichtype = Solver(pcoin->tx->vout[i].scriptPubKey, solutions);
-                    if ((TxoutType::PUBKEY ==  whichtype) || (TxoutType::PUBKEYHASH == whichtype) ||
-                            (includeColdStaking && TxoutType::COLDSTAKE == whichtype))
+
+                    if ((TxoutType::PUBKEY == whichtype) || (TxoutType::PUBKEYHASH == whichtype) ||
+                        (includeColdStaking && TxoutType::COLDSTAKE == whichtype))
                     {
                         std::unique_ptr<SigningProvider> provider = GetSolvingProvider(pcoin->tx->vout[i].scriptPubKey);
-                        bool solvable = IsSolvable(*provider, pcoin->tx->vout[i].scriptPubKey, mine == ISMINE_COLD);
-                        bool spendable = ((mine & ISMINE_SPENDABLE) != ISMINE_NO) ||
-                            (((mine & ISMINE_WATCH_ONLY) != ISMINE_NO) && solvable) ||
-                            ((mine & (includeColdStaking ? ISMINE_COLD : ISMINE_NO)) != ISMINE_NO);
-                        if (nTotalStakeValue + pcoin->tx->vout[i].nValue <= nMaxStakeSatoshis) {
-                            nTotalStakeValue += pcoin->tx->vout[i].nValue;
-                            vCoins.push_back(COutput(pcoin, i, nDepth, spendable, solvable, pcoin->IsTrusted()));
-                        }
+						bool solvable = provider ? IsSolvable(*provider, pcoin->tx->vout[i].scriptPubKey, mine == ISMINE_COLD) : false;
+						bool spendable = ((mine & ISMINE_SPENDABLE) != ISMINE_NO) ||
+    						(((mine & ISMINE_WATCH_ONLY) != ISMINE_NO) && solvable) ||
+    						((mine & (includeColdStaking ? ISMINE_COLD : ISMINE_NO)) != ISMINE_NO);
+
+						vCoins.push_back(COutput(pcoin, i, nDepth, spendable, solvable, pcoin->IsTrusted()));
                     }
                 }
             }
@@ -3446,7 +3443,6 @@ bool CWallet::CreateTransaction(
 
 uint64_t CWallet::GetStakeWeight() const
 {
-    // Choose coins to use
     std::set<std::pair<const CWalletTx*,unsigned int> > setCoins;
     SelectCoinsForStaking(setCoins);
 
@@ -3455,13 +3451,11 @@ uint64_t CWallet::GetStakeWeight() const
 
     uint64_t nWeight = 0;
 
-    for(std::pair<const CWalletTx*,unsigned int> pcoin : setCoins)
+    for (std::pair<const CWalletTx*,unsigned int> pcoin : setCoins)
     {
         if (pcoin.first->GetDepthInMainChain() >= COINBASE_MATURITY)
             nWeight += pcoin.first->tx->vout[pcoin.second].nValue;
     }
-
-    nWeight = std::min(nWeight, (uint64_t)MAX_STAKE_SATOSHIS);
 
     return nWeight;
 }
