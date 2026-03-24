@@ -4,4 +4,4 @@
 #
 # A helper script to be sourced into the gitian descriptors
 
-DISTNAME="996coin-0.21"
+DISTNAME="996coin-1.01"
