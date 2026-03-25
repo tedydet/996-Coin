@@ -3,18 +3,6 @@
 996 Coin is a cryptocurrency developed by the HCC Community (see hashcashfaucet.com)
 This repository contains the core node, CLI tools, wallet tooling, and Qt desktop wallet sources.
 
-## Project Status
-
-This project is in active fork/customization state. Some codebase and build-system elements still reflect upstream Bitcoin PoS ancestry while chain parameters and network identity have been customized for 996-Coin.
-
-That means this repository should currently be treated as a development fork, not as a polished end-user release.
-
-## Important Note
-
-This project is derived from upstream Bitcoin Core / Bitcoin PoS lineage. As with many cryptocurrency forks, inherited naming, comments, scripts, and documentation may still exist in parts of the codebase. Ongoing cleanup and verification are expected parts of development.
-
-Do not assume all documentation, filenames, or build artifacts are fully rebranded until they have been reviewed.
-
 ## 996-Coin Parameters
 
 ### General
@@ -213,6 +201,19 @@ Recommended contribution flow:
 3. test locally where possible
 4. open a pull request with a clear summary
 5. include notes on build/test status
+
+## Project Status
+
+This project is in active fork/customization state. Some codebase and build-system elements still reflect upstream Bitcoin PoS ancestry while chain parameters and network identity have been customized for 996-Coin.
+
+That means this repository should currently be treated as a development fork, not as a polished end-user release.
+
+## Important Note
+
+This project is derived from upstream Bitcoin Core / Bitcoin PoS lineage. As with many cryptocurrency forks, inherited naming, comments, scripts, and documentation may still exist in parts of the codebase. Ongoing cleanup and verification are expected parts of development.
+
+Do not assume all documentation, filenames, or build artifacts are fully rebranded until they have been reviewed.
+
 
 ## Security
 
