@@ -11,7 +11,7 @@ SetDateSave off
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
 !define COMPANY "996-Coin Core project"
-!define URL https://hashcashfaucet.com/
+!define URL https://996coin.com/
 
 # MUI Symbol Definitions
 !define MUI_ICON "/home/wallet/996-Coin/share/pixmaps/bitcoin.ico"
@@ -25,7 +25,7 @@ SetDateSave off
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "996-Coin Core"
 !define MUI_FINISHPAGE_RUN "$WINDIR\explorer.exe"
-!define MUI_FINISHPAGE_RUN_PARAMETERS $INSTDIR\996coin-qt
+!define MUI_FINISHPAGE_RUN_PARAMETERS $INSTDIR\996coin-qt.exe
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "/home/wallet/996-Coin/share/pixmaps/nsis-wizard.bmp"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
@@ -56,12 +56,12 @@ CRCCheck on
 XPStyle on
 BrandingText " "
 ShowInstDetails show
-VIProductVersion 1.0.1.0
+VIProductVersion 1.0.2.0
 VIAddVersionKey ProductName "996-Coin Core"
-VIAddVersionKey ProductVersion "1.0.1"
+VIAddVersionKey ProductVersion "1.0.2"
 VIAddVersionKey CompanyName "${COMPANY}"
 VIAddVersionKey CompanyWebsite "${URL}"
-VIAddVersionKey FileVersion "1.0.1"
+VIAddVersionKey FileVersion "1.0.2"
 VIAddVersionKey FileDescription "Installer for 996-Coin Core"
 VIAddVersionKey LegalCopyright "Copyright (C) 2009-2026 The 996-Coin Core developers"
 InstallDirRegKey HKCU "${REGKEY}" Path
@@ -71,14 +71,14 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File /home/wallet/996-Coin/release/996coin-qt
+    File /home/wallet/996-Coin/release/996coin-qt.exe
     File /oname=COPYING.txt /home/wallet/996-Coin/COPYING
     File /oname=readme.txt /home/wallet/996-Coin/doc/README_windows.txt
     SetOutPath $INSTDIR\daemon
-    File /home/wallet/996-Coin/release/996coind
-    File /home/wallet/996-Coin/release/996coin-cli
-    File /home/wallet/996-Coin/release/996coin-tx
-    File /home/wallet/996-Coin/release/996coin-wallet
+    File /home/wallet/996-Coin/release/996coind.exe
+    File /home/wallet/996-Coin/release/996coin-cli.exe
+    File /home/wallet/996-Coin/release/996coin-tx.exe
+    File /home/wallet/996-Coin/release/996coin-wallet.exe
     SetOutPath $INSTDIR\doc
     File /r /x Makefile* /home/wallet/996-Coin/doc\*.*
     SetOutPath $INSTDIR
@@ -91,12 +91,12 @@ Section -post SEC0001
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\996coin-qt
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\996-Coin Core (testnet, 64-bit).lnk" "$INSTDIR\996coin-qt" "-testnet" "$INSTDIR\996coin-qt" 1
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\996coin-qt.exe
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\996-Coin Core (testnet, 64-bit).lnk" "$INSTDIR\996coin-qt.exe" "-testnet" "$INSTDIR\996coin-qt.exe" 1
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
-    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "1.0.1"
+    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "1.0.2"
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" URLInfoAbout "${URL}"
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayIcon $INSTDIR\bitcoin-qt.exe
@@ -105,8 +105,8 @@ Section -post SEC0001
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     WriteRegStr HKCR "bitcoin" "URL Protocol" ""
     WriteRegStr HKCR "bitcoin" "" "URL:Bitcoin"
-    WriteRegStr HKCR "bitcoin\DefaultIcon" "" $INSTDIR\996coin-qt
-    WriteRegStr HKCR "bitcoin\shell\open\command" "" '"$INSTDIR\996coin-qt" "%1"'
+    WriteRegStr HKCR "bitcoin\DefaultIcon" "" $INSTDIR\996coin-qt.exe
+    WriteRegStr HKCR "bitcoin\shell\open\command" "" '"$INSTDIR\996coin-qt.exe" "%1"'
 SectionEnd
 
 # Macro for selecting uninstaller sections
@@ -124,7 +124,7 @@ done${UNSECTION_ID}:
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
-    Delete /REBOOTOK $INSTDIR\996coin-qt
+    Delete /REBOOTOK $INSTDIR\996coin-qt.exe
     Delete /REBOOTOK $INSTDIR\COPYING.txt
     Delete /REBOOTOK $INSTDIR\readme.txt
     RMDir /r /REBOOTOK $INSTDIR\daemon

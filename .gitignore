@@ -163,3 +163,4 @@ configure~
 
 # Mainnet debug testing directory
 testnet/
+src/obj/build.h
