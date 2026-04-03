@@ -11,7 +11,7 @@ SetDateSave off
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
 !define COMPANY "996-Coin Core project"
-!define URL https://hashcashfaucet.com/
+!define URL https://996coin.com/
 
 # MUI Symbol Definitions
 !define MUI_ICON "/home/wallet/996-Coin/share/pixmaps/bitcoin.ico"
