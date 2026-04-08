@@ -89,7 +89,9 @@ This means a UTXO larger than `125,000` coins does **not** gain additional staki
 - Splitting funds into multiple UTXOs of around **125k** can be advantageous for staking frequency.
 - A single 400k UTXO does **not** stake like 400k effective weight; it is capped to 125k in the kernel.
 
-## MPoS / Multi PoS Rewards
+## Mutualized Proof of Stake (MPoS) 
+Mutualized Proof of Stake (MPoS) is a specialized consensus mechanism used by the Qtum blockchain to enhance network security.
+MPoS operates by sharing block rewards equally between the successful validator and the previous nine validators. It also delays rewards to increase the cost of malicious attacks. More information about MPoS can be found in [Chapter 5.7](https://lup.lub.lu.se/luur/download?func=downloadFile&recordOId=9102399&fileOId=9102400) of the wonderful MSc thesis by Antonio Saaranen.
 
 ### MPoS parameters
 - **MPoS reward recipients:** `10`
