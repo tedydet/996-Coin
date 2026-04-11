@@ -199,6 +199,7 @@ These packages cover:
 
 ```bash
 cd ~/996-Coin/depends
+chmod +x config.guess config.sub
 make -j$(nproc)
 ```
 
