@@ -1252,6 +1252,7 @@ void CWallet::transactionRemovedFromMempool(const CTransactionRef& tx, MemPoolRe
     auto it = mapWallet.find(tx->GetHash());
     if (it != mapWallet.end()) {
         it->second.fInMempool = false;
+        it->second.MarkDirty();
     }
     // Handle transactions that were removed from the mempool because they
     // conflict with transactions in a newly connected block.
