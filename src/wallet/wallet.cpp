@@ -1951,25 +1951,35 @@ void CWallet::ReacceptWalletTransactions()
     // If transactions aren't being broadcasted, don't let them into local mempool either
     if (!fBroadcastTransactions)
         return;
+
+    AssertLockHeld(cs_wallet);
+
     std::map<int64_t, CWalletTx*> mapSorted;
 
-    // Sort pending wallet transactions based on their initial wallet insertion order
+    // Sort pending wallet transactions based on their initial wallet insertion order.
+    // Only re-submit normal unconfirmed wallet transactions here.
+    // Do NOT abandon coinstake/coinbase transactions during startup reaccept,
+    // because after restart or reorg recovery they may temporarily appear with
+    // depth 0 and this can trigger a large abandon cascade in the wallet.
     for (std::pair<const uint256, CWalletTx>& item : mapWallet) {
         const uint256& wtxid = item.first;
         CWalletTx& wtx = item.second;
         assert(wtx.GetHash() == wtxid);
 
-        int nDepth = wtx.GetDepthInMainChain();
+        const int nDepth = wtx.GetDepthInMainChain();
 
-        if (nDepth == 0 && !wtx.isAbandoned()) {
-            if (wtx.IsCoinBase() || wtx.IsCoinStake()) {
-                LogPrint(BCLog::COINSTAKE, "Abandoning coinbase/coinstake wtx %s\n", wtx.GetHash().ToString());
-                if (!AbandonTransaction(wtxid))
-                    LogPrint(BCLog::COINSTAKE, "Failed to abandon tx %s\n", wtx.GetHash().ToString());
-            } else {
-                mapSorted.insert(std::make_pair(wtx.nOrderPos, &wtx));
-            }
-        }
+        // Only consider plain unconfirmed, non-abandoned, non-conflicted,
+        // non-coinbase, non-coinstake transactions for reaccept.
+        if (nDepth != 0)
+            continue;
+        if (wtx.isAbandoned())
+            continue;
+        if (wtx.IsCoinBase() || wtx.IsCoinStake())
+            continue;
+        if (wtx.InMempool())
+            continue;
+
+        mapSorted.insert(std::make_pair(wtx.nOrderPos, &wtx));
     }
 
     // Try to add wallet transactions to memory pool
