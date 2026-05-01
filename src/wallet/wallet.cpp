@@ -4147,36 +4147,43 @@ std::set<CTxDestination> CWallet::GetLabelAddresses(const std::string& label) co
 }
 
 // disable transaction (only for coinstake)
-void CWallet::DisableTransaction(const CTransaction &tx)
+void CWallet::DisableTransaction(const CTransaction& tx)
 {
-    if (!tx.IsCoinStake() || !IsRelevantToMe_MPOS(tx))
+    if (!tx.IsCoinStake() || !IsRelevantToMe_MPOS(tx)) {
         return; // only disconnecting coinstake requires marking input unspent
+    }
 
-    uint256 hash = tx.GetHash();
-    bool is_from_me = IsFromMe(tx);
+    const uint256 hash = tx.GetHash();
+    const bool is_from_me = IsFromMe(tx);
 
-    LogPrint(BCLog::COINSTAKE, "Abandoning coinstake tx %s\n", hash.ToString());
+    LogPrint(BCLog::COINSTAKE, "Disabling coinstake tx %s\n", hash.ToString());
 
-    if (AbandonTransaction(hash))
-    {
-        LOCK(cs_wallet);
-        RemoveFromSpends(hash);
-        // If the stake was done by me, update the transaction vins from the wallet also
-        if (is_from_me)
-        {
-            LogPrint(BCLog::COINSTAKE, "Reverting tx vins for %s\n", hash.ToString());
-            for (const CTxIn& txin : tx.vin)
-            {
-                CWalletTx &coin = mapWallet.at(txin.prevout.hash);
+    if (!AbandonTransaction(hash)) {
+        LogPrint(BCLog::COINSTAKE, "Failed to abandon coinstake tx %s\n", hash.ToString());
+        return;
+    }
+
+    LOCK(cs_wallet);
+
+    RemoveFromSpends(hash);
+
+    // If the stake was done by me, update the transaction vins from the wallet also
+    if (is_from_me) {
+        LogPrint(BCLog::COINSTAKE, "Reverting tx vins for %s\n", hash.ToString());
+        for (const CTxIn& txin : tx.vin) {
+            auto it_coin = mapWallet.find(txin.prevout.hash);
+            if (it_coin != mapWallet.end()) {
+                CWalletTx& coin = it_coin->second;
                 coin.MarkDirty();
                 NotifyTransactionChanged(this, coin.GetHash(), CT_UPDATED);
             }
         }
-        CWalletTx& wtx = mapWallet.at(hash);
-        wtx.MarkDirty();
-        NotifyTransactionChanged(this, hash, CT_DELETED);
-    } else {
-        LogPrint(BCLog::COINSTAKE, "Failed to abandon coinstake tx %s\n", hash.ToString());
+    }
+
+    auto it_wtx = mapWallet.find(hash);
+    if (it_wtx != mapWallet.end()) {
+        it_wtx->second.MarkDirty();
+        NotifyTransactionChanged(this, hash, CT_UPDATED);
     }
 }
 
